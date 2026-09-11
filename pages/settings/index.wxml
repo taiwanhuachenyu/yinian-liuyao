@@ -1,0 +1,45 @@
+<view class="page">
+  <view class="shell">
+    <view class="card">
+      <view class="section-title">AI 解卦配置</view>
+
+      <view style="margin-bottom: 14rpx;">
+        <view class="label">接口地址</view>
+        <input class="input" value="{{draft.baseUrl}}" placeholder="https://api.example.com/v1" bindinput="updateBaseUrl" />
+        <view class="small" style="margin-top: 6rpx;">实际请求：{{endpointText}}</view>
+      </view>
+
+      <view style="margin-bottom: 14rpx;">
+        <view class="label">API Key</view>
+        <view style="display: flex; align-items: center; gap: 10rpx;">
+          <input
+            class="input"
+            style="flex: 1"
+            password="{{!showKey}}"
+            value="{{draft.apiKey}}"
+            placeholder="sk-..."
+            bindinput="updateApiKey"
+          />
+          <button class="btn ghost" bindtap="toggleKey" style="min-width: 140rpx;">{{showKey ? '隐藏' : '显示'}}</button>
+        </view>
+      </view>
+
+      <view style="margin-bottom: 14rpx;">
+        <view class="label">模型名</view>
+        <input class="input" value="{{draft.model}}" placeholder="gpt-4o" bindinput="updateModel" />
+      </view>
+
+      <view style="display: flex; gap: 10rpx; margin-top: 10rpx;">
+        <button class="btn" bindtap="onSave">保存</button>
+        <button class="btn ghost" bindtap="onClear">清除</button>
+      </view>
+
+      <view style="margin-top: 14rpx;">
+        <button class="btn ghost" bindtap="onTest" disabled="{{testing}}">{{testing ? '测试中…' : '测试连接'}}</button>
+        <view class="small" style="margin-top: 8rpx;">{{testMessage}}</view>
+      </view>
+
+      <button class="btn ghost" style="margin-top: 14rpx;" bindtap="onBack">返回</button>
+    </view>
+  </view>
+</view>

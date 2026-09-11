@@ -1,0 +1,564 @@
+.result-page { --result-ink:#192033; --result-muted:#778096; --result-line:rgba(65,78,126,.09); background:radial-gradient(circle at 92% 8%,rgba(255,190,175,.22),transparent 26%),radial-gradient(circle at 8% 24%,rgba(120,215,193,.16),transparent 27%),linear-gradient(180deg,#fafbff 0%,#f5f7ff 54%,#fbfcff 100%); }
+.result-page .paper-card { border:1rpx solid rgba(89,104,165,.085); border-radius:34rpx; background:rgba(255,255,255,.92); box-shadow:0 17rpx 48rpx rgba(65,76,122,.065); }
+.result-hero { box-shadow:0 20rpx 56rpx rgba(69,80,130,.075); }
+.result-question { color:var(--result-ink); font-size:38rpx; letter-spacing:-1rpx; }
+.hex-pair { gap:16rpx; }
+.hex-summary { border-color:rgba(88,103,171,.1); border-radius:28rpx; background:rgba(255,255,255,.72); box-shadow:none; }
+.hex-symbol { color:#6170eb; }
+.calendar-strip,.result-switch { border:1rpx solid rgba(76,90,146,.075); box-shadow:0 11rpx 30rpx rgba(70,80,121,.045); }
+.chart-card { padding:32rpx 26rpx 28rpx; }
+.chart-heading { align-items:flex-start; gap:18rpx; }
+.chart-legend { max-width:250rpx; padding:12rpx 14rpx; border:1rpx solid rgba(79,93,151,.08); border-radius:18rpx; background:#fafbff; }
+.chart-columns { margin-top:22rpx; color:#9299aa; font-size:20rpx; }
+.yao-row { min-height:132rpx; border-bottom:1rpx solid var(--result-line); }
+.yao-row--moving { background:linear-gradient(90deg,rgba(255,119,107,.075),rgba(255,255,255,0) 72%); }
+.yao-row--moving::before { width:4rpx; border-radius:4rpx; background:#ff776b; }
+.yao-spirit { color:#343b4d; font-size:27rpx; }
+.yao-core { position:relative; padding-left:74rpx !important; overflow:visible; }
+.yao-qin { color:#ef7165; font-size:29rpx; font-weight:750; }
+.yao-najia { color:#6f788b; font-size:22rpx; }
+.yao-tags { position:static !important; }
+.yao-tag--world,.yao-tag--response { position:absolute !important; left:7rpx !important; top:50% !important; z-index:2; display:flex !important; align-items:center; justify-content:center; width:42rpx !important; height:54rpx !important; margin:0 !important; padding:0 !important; transform:translateY(-50%); border:0 !important; border-radius:0 !important; background:transparent !important; box-shadow:none !important; font-size:28rpx !important; font-weight:800 !important; line-height:1 !important; }
+.yao-tag--world { color:#e36558 !important; border-left:3rpx solid rgba(227,101,88,.38) !important; }
+.yao-tag--response { color:#5b68e8 !important; border-left:3rpx solid rgba(91,104,232,.34) !important; }
+.yao-tag--body,.yao-tag--plain { padding:2rpx 8rpx; border:0; background:#f3f5f9; color:#8b93a5; font-size:18rpx; }
+.yao-changed { border:1rpx solid rgba(84,194,169,.12); border-radius:22rpx; background:rgba(239,250,247,.74); }
+.classic-card,.ai-card { box-shadow:0 17rpx 48rpx rgba(65,76,122,.06); }
+.judgment,.line-reading { border-radius:0; background:transparent; box-shadow:none; }
+.line-reading { padding:22rpx 4rpx; border-bottom:1rpx solid rgba(72,84,127,.08); }
+.line-reading--moving { padding:23rpx 18rpx; border:1rpx solid rgba(255,119,107,.12); border-radius:22rpx; background:rgba(255,247,244,.75); }
+.ai-card { background:linear-gradient(135deg,rgba(243,245,255,.96),rgba(240,251,248,.92)); }
+
+@media screen and (max-width:350px) {
+  .chart-card { padding-left:20rpx; padding-right:20rpx; }
+  .yao-core { padding-left:62rpx !important; }
+  .yao-tag--world,.yao-tag--response { left:4rpx !important; font-size:25rpx !important; }
+  .yao-qin { font-size:26rpx; }
+  .yao-najia { font-size:20rpx; }
+}
+
+/* The chart header and every yao row share the same four visual axes. */
+.result-page .chart-columns {
+  display: grid;
+  grid-template-columns: 90rpx 66rpx minmax(0, 1fr) 184rpx !important;
+  align-items: center;
+  gap: 0 !important;
+  column-gap: 0 !important;
+}
+
+.chart-columns__spirit,
+.chart-columns__relation,
+.chart-columns__original {
+  min-width: 0;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.chart-columns__changed {
+  min-width: 0;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.result-page .chart-columns__spirit {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  justify-self: start !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.result-page .chart-columns__relation {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  justify-self: start !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.result-page .chart-columns__original {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  justify-self: start !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.result-page .chart-columns__changed {
+  grid-column: 4 !important;
+  grid-row: 1 !important;
+  justify-self: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.result-page .yao-changed {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  height: 95rpx !important;
+  min-height: 95rpx !important;
+  padding: 0 !important;
+}
+
+.result-page .yao-changed > text {
+  order: 1;
+  margin: 0 !important;
+}
+
+.result-page .yao-changed > .hex-line {
+  order: 2;
+  margin: 13rpx 0 0 !important;
+}
+
+/* Result typography follows one restrained five-level reading scale. */
+.result-eyebrow,
+.hex-role,
+.hex-trigrams,
+.hero-tag {
+  font-size: 20rpx;
+  line-height: 1.5;
+}
+.result-facts > view > text:first-child {
+  font-size: 20rpx;
+  line-height: 1.45;
+}
+.chart-legend text {
+  font-size: 19rpx;
+  line-height: 1.4;
+  color: #7d8497;
+}
+.chart-legend .legend-mark {
+  font-size: 18rpx;
+  line-height: 1.3;
+}
+.chart-columns__spirit,
+.chart-columns__relation,
+.chart-columns__original,
+.chart-columns__changed {
+  font-size: 21rpx;
+  line-height: 1.45;
+  color: #7f879a;
+}
+.yao-spirit > text:last-child,
+.yao-najia,
+.yao-power,
+.fushen-title {
+  font-size: 21rpx;
+  line-height: 1.45;
+}
+.result-page .yao-changed > text {
+  font-size: 21rpx;
+  line-height: 1.35;
+  color: #438f80;
+}
+.yao-tag--plain {
+  font-size: 19rpx;
+  line-height: 1.4;
+}
+.judgment-label {
+  font-size: 20rpx;
+  line-height: 1.45;
+}
+.line-reading__head > text:last-child {
+  font-size: 18rpx;
+  line-height: 1.35;
+}
+.line-reading__text,
+.line-reading__change {
+  font-size: 24rpx;
+  line-height: 1.72;
+}
+
+/* Symmetric mobile chart: original and changed hexagrams share one visual grammar. */
+.result-page .chart-columns {
+  position: relative;
+  grid-template-columns: 82rpx minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: 18rpx !important;
+  column-gap: 18rpx !important;
+}
+
+.result-page .chart-columns__spirit {
+  grid-column: 1 !important;
+  justify-self: start !important;
+}
+
+.result-page .chart-columns__original {
+  grid-column: 2 !important;
+  justify-self: center !important;
+  text-align: center;
+}
+
+.result-page .chart-columns__changed {
+  grid-column: 3 !important;
+  justify-self: center !important;
+  text-align: center;
+}
+
+.result-page .chart-columns__relation {
+  position: absolute;
+  left: 58%;
+  top: 50%;
+  z-index: 3;
+  padding: 2rpx 8rpx !important;
+  border: 1rpx solid rgba(110, 118, 145, .12);
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, .94);
+  font-size: 18rpx;
+  line-height: 1.35;
+  transform: translate(-50%, -50%);
+}
+
+.result-page .yao-row {
+  grid-template-columns: 82rpx minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: 18rpx !important;
+  column-gap: 18rpx !important;
+  align-items: stretch !important;
+}
+
+.result-page .yao-spirit {
+  align-self: center;
+}
+
+.result-page .yao-core,
+.result-page .yao-changed {
+  position: relative;
+  box-sizing: border-box;
+  width: auto !important;
+  height: auto !important;
+  min-height: 118rpx !important;
+  padding: 10rpx 10rpx !important;
+  border-radius: 22rpx;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
+
+.result-page .yao-core {
+  border: 1rpx solid rgba(239, 130, 115, .14);
+  background: linear-gradient(145deg, rgba(255, 250, 248, .98), rgba(255, 253, 252, .92));
+}
+
+.result-page .yao-changed {
+  border: 1rpx solid rgba(75, 166, 143, .14);
+  background: linear-gradient(145deg, rgba(242, 251, 248, .98), rgba(237, 248, 245, .92));
+}
+
+.result-page .yao-detail,
+.result-page .yao-changed > text {
+  box-sizing: border-box;
+  width: 100% !important;
+  height: 32rpx;
+  min-height: 32rpx;
+  line-height: 32rpx !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.result-page .yao-core > .hex-line,
+.result-page .yao-changed > .hex-line {
+  order: 2;
+  flex: 0 0 auto;
+  margin: 10rpx 0 0 !important;
+  align-self: center;
+}
+
+.result-page .yao-detail {
+  order: 1;
+}
+
+.result-page .yao-tags {
+  position: static !important;
+  order: 3;
+  box-sizing: border-box;
+  width: 100% !important;
+  min-height: 24rpx;
+  margin: 8rpx 0 0 !important;
+  padding: 0 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.result-page .yao-changed::after {
+  order: 3;
+  content: '';
+  display: block;
+  height: 24rpx;
+  margin-top: 8rpx;
+}
+
+.result-page .yao-tag--world,
+.result-page .yao-tag--response {
+  position: absolute !important;
+  right: -9rpx !important;
+  left: auto !important;
+  top: 50% !important;
+  z-index: 5;
+  margin: 0 !important;
+  transform: translate(50%, -50%);
+  box-shadow: 0 4rpx 14rpx rgba(74, 83, 115, .12);
+}
+
+/* The mobile chart uses a clean bilateral axis: the row marker owns the
+ * center, while both panel headers stay unobstructed. */
+.result-page .chart-columns,
+.result-page .yao-row {
+  gap: 32rpx !important;
+  column-gap: 32rpx !important;
+}
+
+.result-page .chart-columns__relation {
+  display: none;
+}
+
+.result-page .yao-tag--world,
+.result-page .yao-tag--response {
+  right: -16rpx !important;
+  box-sizing: border-box;
+  width: 38rpx !important;
+  min-width: 38rpx !important;
+  max-width: 38rpx !important;
+  height: 38rpx !important;
+  min-height: 38rpx !important;
+  max-height: 38rpx !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  font-size: 22rpx;
+  line-height: 38rpx;
+}
+
+.result-page .yao-tags {
+  height: 36rpx;
+  min-height: 36rpx;
+}
+
+.result-page .yao-changed::after {
+  height: 36rpx;
+}
+
+/* Typography follows the source web chart's restrained hierarchy rather than
+ * treating every datum as a heading. Values are adapted to a 430px handset. */
+.result-page .chart-columns__spirit,
+.result-page .chart-columns__original,
+.result-page .chart-columns__changed {
+  font-size: 21rpx !important;
+  line-height: 30rpx !important;
+  font-weight: 500 !important;
+  letter-spacing: .04em;
+}
+
+.result-page .yao-spirit > text:first-child {
+  font-size: 24rpx !important;
+  line-height: 30rpx !important;
+  font-weight: 600 !important;
+  letter-spacing: .02em;
+}
+
+.result-page .yao-spirit > text:last-child {
+  margin-top: 2rpx;
+  font-size: 20rpx !important;
+  line-height: 26rpx !important;
+  font-weight: 400 !important;
+}
+
+.result-page .yao-detail {
+  gap: 6rpx;
+  align-items: center;
+}
+
+.result-page .yao-qin {
+  font-size: 24rpx !important;
+  line-height: 32rpx !important;
+  font-weight: 500 !important;
+  letter-spacing: .02em;
+}
+
+.result-page .yao-najia {
+  font-size: 21rpx !important;
+  line-height: 32rpx !important;
+  font-weight: 400 !important;
+}
+
+.result-page .yao-power {
+  min-width: 28rpx;
+  padding: 1rpx 5rpx !important;
+  font-size: 19rpx !important;
+  line-height: 26rpx !important;
+  font-weight: 500 !important;
+}
+
+.result-page .yao-changed > text {
+  font-size: 23rpx !important;
+  line-height: 32rpx !important;
+  font-weight: 500 !important;
+  letter-spacing: .01em;
+}
+
+.result-page .yao-tag--plain {
+  min-height: 28rpx !important;
+  padding: 1rpx 6rpx !important;
+  border-radius: 7rpx !important;
+  font-size: 19rpx !important;
+  line-height: 26rpx !important;
+  font-weight: 400 !important;
+}
+
+/* One continuous chart, matching the source web layout. Individual yao cells
+ * must not read as unrelated cards. */
+.result-page .yao-table {
+  overflow: hidden;
+  border-top: 1rpx solid rgba(98, 108, 137, .12);
+  border-bottom: 1rpx solid rgba(98, 108, 137, .12);
+}
+
+.result-page .yao-row {
+  border-bottom: 1rpx solid rgba(98, 108, 137, .11) !important;
+  background: transparent !important;
+}
+
+.result-page .yao-row:last-child {
+  border-bottom: 0 !important;
+}
+
+.result-page .yao-core,
+.result-page .yao-changed {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.result-page .yao-detail {
+  display: grid !important;
+  grid-template-columns: 50rpx 46rpx 32rpx;
+  column-gap: 4rpx;
+  justify-content: center !important;
+}
+
+.result-page .yao-qin,
+.result-page .yao-najia,
+.result-page .yao-power {
+  box-sizing: border-box;
+  width: 100% !important;
+  margin: 0 !important;
+  text-align: center;
+}
+
+.result-page .yao-tag--world,
+.result-page .yao-tag--response {
+  width: 32rpx !important;
+  min-width: 32rpx !important;
+  max-width: 32rpx !important;
+  height: 36rpx !important;
+  min-height: 36rpx !important;
+  max-height: 36rpx !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 24rpx !important;
+  line-height: 36rpx !important;
+  font-weight: 600 !important;
+}
+
+/* Yao text is one editorial system. Motion changes content, not geometry. */
+.result-page .line-readings .line-reading,
+.result-page .line-readings .line-reading--moving {
+  box-sizing: border-box;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 22rpx 4rpx !important;
+  border: 0 !important;
+  border-bottom: 1rpx solid rgba(220, 123, 105, .16) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.result-page .line-readings .line-reading:last-child {
+  border-bottom: 0 !important;
+}
+
+.result-page .line-reading__head {
+  box-sizing: border-box;
+  width: 100% !important;
+  min-height: 32rpx;
+  margin: 0 0 8rpx !important;
+  padding: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10rpx;
+  background: transparent !important;
+  color: #c96555 !important;
+  font-size: 22rpx !important;
+  line-height: 32rpx !important;
+  font-weight: 600 !important;
+  letter-spacing: .03em;
+}
+
+.result-page .line-reading__head > text {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  font-weight: inherit !important;
+}
+
+.result-page .line-reading--moving .line-reading__head > text:last-child:not(:first-child) {
+  padding: 0 7rpx !important;
+  border-radius: 6rpx !important;
+  background: rgba(215, 105, 87, .12) !important;
+  font-size: 18rpx !important;
+  line-height: 26rpx !important;
+}
+
+.result-page .line-reading__text,
+.result-page .line-reading__change {
+  box-sizing: border-box;
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.result-page .line-reading__change {
+  margin-top: 7rpx !important;
+  padding-top: 7rpx;
+  border-top: 1rpx dashed rgba(70, 158, 137, .18);
+}
+
+/* Original and changed columns share exactly the same internal schema. */
+.result-page .yao-qin,
+.result-page .yao-najia {
+  color: #363a4d !important;
+}
+
+.result-page .yao-changed > .yao-detail--changed {
+  order: 1;
+  margin: 0 !important;
+}
+
+.result-page .yao-qin--changed,
+.result-page .yao-najia--changed {
+  color: #3f9984 !important;
+}
+
+.result-page .yao-power--placeholder {
+  visibility: hidden;
+}
+
+/* The back affordance aligns with the outer page frame, not the hero's inner
+ * text inset. Its 64px touch target remains unchanged. */
+.result-page .result-nav > .result-nav__button:first-child {
+  margin-left: -28rpx !important;
+}

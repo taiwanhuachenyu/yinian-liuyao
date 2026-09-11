@@ -1,0 +1,74 @@
+.product-brand {
+  display: flex;
+  align-items: center;
+}
+
+.product-brand__mark {
+  display: block;
+  width: 64rpx;
+  height: 64rpx;
+  flex: 0 0 auto;
+}
+
+.product-brand__company,
+.product-brand__company-cn,
+.product-brand__company-en {
+  display: block;
+}
+
+.product-brand__company {
+  margin-left: 14rpx;
+}
+
+.product-brand__company-cn {
+  color: #08211f;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 20rpx;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 1rpx;
+  white-space: nowrap;
+}
+
+.product-brand__company-en {
+  margin-top: 7rpx;
+  color: #5d726e;
+  font-size: 11rpx;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 2rpx;
+}
+
+.product-brand__divider {
+  width: 1rpx;
+  height: 35rpx;
+  margin: 0 16rpx;
+  background: rgba(8, 33, 31, .16);
+}
+
+.product-brand__title {
+  display: block;
+  color: #242635;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 29rpx;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 2rpx;
+}
+
+.product-brand--compact .product-brand__mark {
+  width: 42rpx;
+  height: 42rpx;
+}
+
+.product-brand--compact .product-brand__company,
+.product-brand--compact .product-brand__divider {
+  display: none;
+}
+
+.product-brand--compact .product-brand__title {
+  margin-left: 10rpx;
+  font-size: 22rpx;
+  letter-spacing: 1rpx;
+  white-space: nowrap;
+}

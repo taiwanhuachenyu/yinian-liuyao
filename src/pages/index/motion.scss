@@ -1,0 +1,41 @@
+.coin-stage.coin-stage--0 .cash-coin.coin--0.coin--flipping,
+.coin-stage.coin-stage--1 .cash-coin.coin--2.coin--flipping,
+.coin-stage.coin-stage--2 .cash-coin.coin--1.coin--flipping,
+.coin-stage.coin-stage--3 .cash-coin.coin--1.coin--flipping {
+  animation-name: coin-flight-left !important;
+  animation-duration: 1.32s !important;
+  animation-timing-function: cubic-bezier(.2,.72,.22,1) !important;
+  animation-fill-mode: both !important;
+}
+
+.coin-stage.coin-stage--0 .cash-coin.coin--1.coin--flipping,
+.coin-stage.coin-stage--1 .cash-coin.coin--0.coin--flipping,
+.coin-stage.coin-stage--2 .cash-coin.coin--2.coin--flipping,
+.coin-stage.coin-stage--3 .cash-coin.coin--0.coin--flipping {
+  animation-name: coin-flight-center !important;
+  animation-duration: 1.32s !important;
+  animation-timing-function: cubic-bezier(.18,.76,.2,1) !important;
+  animation-fill-mode: both !important;
+}
+
+.coin-stage.coin-stage--0 .cash-coin.coin--2.coin--flipping,
+.coin-stage.coin-stage--1 .cash-coin.coin--1.coin--flipping,
+.coin-stage.coin-stage--2 .cash-coin.coin--0.coin--flipping,
+.coin-stage.coin-stage--3 .cash-coin.coin--2.coin--flipping {
+  animation-name: coin-flight-right !important;
+  animation-duration: 1.32s !important;
+  animation-timing-function: cubic-bezier(.22,.7,.18,1) !important;
+  animation-fill-mode: both !important;
+}
+
+.coin-stage .cash-coin.coin--settling.coin--0 {
+  animation: coin-settle-left .44s ease-out both !important;
+}
+
+.coin-stage .cash-coin.coin--settling.coin--1 {
+  animation: coin-settle-center .48s ease-out both !important;
+}
+
+.coin-stage .cash-coin.coin--settling.coin--2 {
+  animation: coin-settle-right .42s ease-out both !important;
+}

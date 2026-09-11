@@ -1,0 +1,39 @@
+.settings-page { background:radial-gradient(circle at 88% 8%,rgba(145,177,255,.2),transparent 28%),radial-gradient(circle at 8% 72%,rgba(255,191,173,.15),transparent 24%),linear-gradient(180deg,#fafbff,#f6f8ff 58%,#fcfdff); }
+.settings-page .grain { opacity:.24; }
+.settings-content { padding-bottom:70rpx; }
+.settings-hero { padding:46rpx 30rpx 34rpx; }
+.settings-title { margin-top:11rpx; color:#182033; font-size:47rpx; line-height:1.16; letter-spacing:-2rpx; }
+.settings-copy { max-width:640rpx; margin-top:18rpx; color:#747d92; font-size:27rpx; line-height:1.7; }
+.settings-page .paper-card { border:1rpx solid rgba(85,99,157,.085); border-radius:34rpx; background:rgba(255,255,255,.92); box-shadow:0 17rpx 48rpx rgba(65,76,122,.06); }
+.form-card { padding:34rpx 30rpx; }
+.form-head { margin-bottom:26rpx; }
+.field { margin-top:25rpx; }
+.field-label { color:#343b4d; font-size:25rpx; font-weight:700; }
+.field input,.field-input { min-height:88rpx; margin-top:12rpx; padding:0 22rpx; border:1rpx solid rgba(75,88,137,.11); border-radius:21rpx; background:#f8f9fd; color:#242c40; font-size:27rpx; box-shadow:inset 0 2rpx 0 rgba(255,255,255,.78); }
+.field-help { margin-top:8rpx; color:#9299aa; font-size:21rpx; line-height:1.5; }
+.save-button,.test-button { min-height:90rpx; border-radius:22rpx; }
+.save-button { margin-top:34rpx; background:linear-gradient(110deg,#5d69e8,#7185ee 58%,#69bec5); box-shadow:0 15rpx 30rpx rgba(86,100,218,.18); }
+.test-button { margin-top:16rpx; border:1rpx solid rgba(91,104,232,.14); background:#f3f5fd; color:#626b83; }
+.test-button[disabled] { opacity:1; color:#adb3c2 !important; background:#f4f5f9 !important; }
+.privacy-card { margin-top:22rpx; border-radius:28rpx; background:linear-gradient(135deg,rgba(255,244,240,.8),rgba(241,250,248,.84)); }
+
+@media screen and (max-width:350px) {
+  .settings-hero { padding-left:24rpx; padding-right:24rpx; }
+  .settings-title { font-size:42rpx; }
+  .form-card { padding:30rpx 24rpx; }
+}
+
+/* Settings keeps explanatory copy comfortably readable. */
+.field-help {
+  font-size: 22rpx;
+  line-height: 1.55;
+}
+.privacy-title {
+  font-size: 26rpx;
+  line-height: 1.45;
+}
+.privacy-copy {
+  font-size: 23rpx;
+  line-height: 1.7;
+  color: #687087;
+}

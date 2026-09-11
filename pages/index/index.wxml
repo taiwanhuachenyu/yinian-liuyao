@@ -1,0 +1,167 @@
+<view class="page">
+  <view class="shell">
+    <view class="hero fade-up">
+      <view class="hero-kicker">I CHING · SIX LINES</view>
+      <view class="hero-head">
+        <view>
+          <view class="hero-title">问此一卦</view>
+          <view class="hero-subtitle">以六爻观势，以清醒观心。所得皆为当下之应。</view>
+        </view>
+        <button class="settings-pill" bindtap="onOpenSettings">AI 设置</button>
+      </view>
+    </view>
+
+    <view class="card fade-up">
+      <view class="section-title">六爻排盘 · 天机妙算</view>
+
+      <view class="seg method-tabs">
+        <view
+          class="seg-btn {{method === 'coins' ? 'active' : ''}}"
+          bindtap="onMethodChange"
+          data-method="coins"
+        >铜钱起卦</view>
+        <view
+          class="seg-btn {{method === 'manual' ? 'active' : ''}}"
+          bindtap="onMethodChange"
+          data-method="manual"
+        >手动起卦</view>
+        <view
+          class="seg-btn {{method === 'time' ? 'active' : ''}}"
+          bindtap="onMethodChange"
+          data-method="time"
+        >天机起卦</view>
+      </view>
+
+      <view class="field">
+        <view class="label">占问事项</view>
+        <input
+          value="{{question}}"
+          placeholder="例如：近期合作能否顺利推进？"
+          class="input"
+          bindinput="onQuestionInput"
+        />
+      </view>
+
+      <view class="field">
+        <view class="field-head">
+          <view class="label">占问时间</view>
+          <view class="live-badge">{{autoTime ? '实时' : '已固定'}}</view>
+        </view>
+        <view class="small field-note">选择日期后将停止实时更新。</view>
+        <picker mode="date" value="{{date}}" bindchange="onDateChange">
+          <view class="picker-box">
+            <text>{{date}}</text>
+            <text class="date-state {{dateValid ? '' : 'invalid'}}">{{dateValid ? '有效' : '无效'}}</text>
+          </view>
+        </picker>
+        <view class="tip {{dateValid ? '' : 'warn'}}">
+          {{dateValid ? '用于月建、日辰与旬空推算' : '日期格式不正确'}}
+        </view>
+      </view>
+
+      <view class="field field-last">
+        <view class="field-head">
+          <view class="label">所用时辰</view>
+          <view class="current-time">{{shichenName}} · {{shichenRange}}</view>
+        </view>
+        <view class="small field-note">天机起卦与时辰起卦均受时辰影响。</view>
+        <view class="shichen-grid">
+          <view
+            wx:for="{{shichenList}}"
+            wx:for-item="item"
+            wx:key="name"
+            data-hour="{{item.hour}}"
+            bindtap="onShichenChange"
+            class="shichen-item {{shichenIndex === index ? 'active' : ''}}"
+          >{{item.name}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="card fade-up">
+      <view class="section-title">
+        {{method === 'coins' ? '铜钱起卦' : method === 'manual' ? '手动选爻' : '天机起卦'}}
+      </view>
+
+      <block wx:if="{{method === 'coins'}}">
+        <view class="small intro-copy">背为阳记三，字为阴记二。六次投掷，自初爻而上。</view>
+
+        <view class="coin-stage">
+          <view class="coin-row">
+            <view class="coin {{coinFaces[0] ? 'head' : 'tail'}} {{isFlipping ? 'flip' : ''}}">{{coinFaces[0] ? '背' : '字'}}</view>
+            <view class="coin {{coinFaces[1] ? 'head' : 'tail'}} {{isFlipping ? 'flip' : ''}}">{{coinFaces[1] ? '背' : '字'}}</view>
+            <view class="coin {{coinFaces[2] ? 'head' : 'tail'}} {{isFlipping ? 'flip' : ''}}">{{coinFaces[2] ? '背' : '字'}}</view>
+          </view>
+          <view wx:if="{{coinCaption}}" class="tip coin-caption">{{coinCaption}}</view>
+          <view class="step-track">
+            <view class="dot {{index < currentStep ? 'done' : ''}}" wx:for="{{[0,1,2,3,4,5]}}" wx:key="*this"></view>
+          </view>
+        </view>
+
+        <view class="action-row">
+          <button
+            class="btn"
+            disabled="{{isFlipping || currentStep >= 6}}"
+            bindtap="onToss"
+          >
+            {{isFlipping ? '抛掷中' : currentStep >= 6 ? '已成卦' : '抛掷铜钱'}}
+          </button>
+          <button class="btn ghost secondary-action" bindtap="onResetYaos">重来</button>
+        </view>
+      </block>
+
+      <block wx:if="{{method === 'manual'}}">
+        <view class="small intro-copy">从初爻到上爻逐一设置，可随时改选。</view>
+        <view wx:for="{{manualOrder}}" wx:key="item" class="manual-row">
+          <text class="label-dot">{{yaoLabels[item]}}</text>
+          <view class="manual-options">
+            <view
+              wx:for="{{manualOptions}}"
+              wx:key="key"
+              wx:for-item="opt"
+              bindtap="onManualPick"
+              data-index="{{item}}"
+              data-yin="{{opt.yin}}"
+              data-changing="{{opt.changing}}"
+              class="manual-option {{yaos[item] && yaos[item].yin === opt.yin && yaos[item].changing === opt.changing ? 'selected' : ''}}"
+            >{{opt.text}}</view>
+          </view>
+        </view>
+      </block>
+
+      <block wx:if="{{method === 'time'}}">
+        <view class="time-oracle">
+          <view class="time-symbol">卦</view>
+          <view>
+            <view class="time-title">以年月日时排卦</view>
+            <view class="small">{{date}} · {{shichenName}}</view>
+          </view>
+        </view>
+        <view class="small intro-copy">不假人为，取此刻时空之数。</view>
+      </block>
+    </view>
+
+    <view class="card fade-up">
+      <view class="section-title">卦象预览</view>
+      <view class="preview-caption">上爻在上，初爻在下</view>
+      <view class="preview-board">
+        <view wx:for="{{previewLines}}" wx:key="index" class="line {{!item ? 'empty' : ''}}">
+          <view class="line-right">{{yaoLabels[previewLines.length - 1 - index]}}</view>
+          <view class="hex-line {{item ? (item.yin ? 'yin' : 'yang') : 'yang'}}">
+            <view wx:if="{{item && item.yin}}" class="hex-segment"></view>
+            <view wx:if="{{item && item.yin}}" class="hex-segment"></view>
+          </view>
+          <view wx:if="{{item && item.changing}}" class="changing-tag">{{item.yin ? '×' : '○'}}</view>
+          <view wx:if="{{!item}}" class="small">未定</view>
+        </view>
+      </view>
+
+      <view class="action-row">
+        <button class="btn" bindtap="onAction">{{actionLabel}}</button>
+        <button class="btn ghost secondary-action" bindtap="onResetYaos">清空</button>
+      </view>
+    </view>
+
+    <view class="page-foot">一事一占 · 心诚意定 · 结果仅供参考</view>
+  </view>
+</view>

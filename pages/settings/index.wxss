@@ -1,0 +1,31 @@
+.card {
+  padding: 22rpx;
+}
+
+.section-title {
+  margin-bottom: 18rpx;
+}
+
+.label {
+  margin-bottom: 8rpx;
+}
+
+.input {
+  margin-top: 4rpx;
+}
+
+.small {
+  color: #6e5b4d;
+}
+
+.row-actions {
+  display: flex;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
+.note {
+  margin-top: 10rpx;
+  color: #7f6557;
+  font-size: 22rpx;
+}

@@ -1,0 +1,15 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/result/index",
+    "pages/settings/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "六爻排盘-天机妙算",
+    "navigationBarBackgroundColor": "#2f1a12",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#26130d",
+    "backgroundTextStyle": "light"
+  },
+  "sitemapLocation": "sitemap.json"
+}

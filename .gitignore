@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.swc/
+tests/artifacts/
+project.private.config.json
+*.log
+.DS_Store
