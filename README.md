@@ -2,10 +2,10 @@
   <img src="./src/assets/yikeyimi-mark-blackwhite.png" width="76" alt="YIKEYIMI Logo" />
 </p>
 
-<h1 align="center">一念六爻</h1>
+<h1 align="center">一念观理</h1>
 
 <p align="center">
-  面向微信小程序的六爻排盘与 AI 解卦应用
+  面向微信小程序的六爻排盘与传统文化学习工具
 </p>
 
 <p align="center">
@@ -23,18 +23,18 @@
 
 ## 关于项目
 
-「一念六爻」是一款由 **一颗薏米 YIKEYIMI** 设计与开发的现代六爻排盘小程序。
+「一念观理」是一款由 **一颗薏米 YIKEYIMI** 设计与开发的现代六爻排盘小程序。
 
 项目在保留纳甲、六亲、六神、世应、动变、旬空等传统排盘信息的基础上，以更清晰的移动端信息层级、更自然的铜钱交互和更克制的视觉语言，降低专业排盘在小屏幕上的阅读负担。
 
-所有起卦记录与模型配置默认保存在微信本地；只有用户主动发起 AI 解卦或连接测试时，相关内容才会发送至用户配置的模型接口。
+所有排盘记录默认保存在微信本地，不上传至项目维护者的服务器。
 
 ## 界面预览
 
 <p align="center">
-  <img src="./docs/home.png" width="360" alt="一念六爻首页" />
+  <img src="./docs/home.png" width="360" alt="一念观理首页" />
   &nbsp;&nbsp;
-  <img src="./docs/result.png" width="360" alt="一念六爻排盘结果" />
+  <img src="./docs/result.png" width="360" alt="一念观理排盘结果" />
 </p>
 
 ## 核心能力
@@ -44,7 +44,6 @@
 - **天机起卦**：选择日期与时辰，以梅花易数时间规则生成卦象。
 - **完整排盘**：展示本卦、变卦、纳甲、六亲、六神、世应、动爻、伏神、旬空与旺衰信息。
 - **经典文本**：提供卦辞、爻辞与结构化卦象解析。
-- **AI 解卦**：支持用户配置 OpenAI Chat Completions 兼容接口，以 Markdown 呈现解读内容。
 - **本地记录**：保存历史卦例，便于回看与比较。
 - **多机型适配**：兼顾不同屏幕尺寸、安全区域与微信胶囊按钮位置。
 
@@ -55,7 +54,7 @@
 - TypeScript 5.9
 - Sass
 - lunar-typescript
-- 微信小程序原生存储与网络接口
+- 微信小程序原生存储
 
 ## 项目结构
 
@@ -66,10 +65,10 @@
 │  ├─ assets/              品牌与铜钱视觉资源
 │  ├─ components/          通用排盘组件
 │  ├─ data/                八卦与六十四卦数据
-│  ├─ pages/               首页、结果页与设置页
+│  ├─ pages/               首页与结果页
 │  ├─ state/               本地运行时状态
 │  ├─ styles/              全局对齐与响应式样式
-│  └─ utils/               起卦算法与 AI 请求逻辑
+│  └─ utils/               排盘算法与历法逻辑
 ├─ tests/                  算法与端到端测试
 ├─ package.json
 └─ project.config.json
@@ -105,28 +104,23 @@ npm run build:weapp
 
 ## 测试
 
-运行六爻算法测试：
+运行源码算法测试：
 
 ```bash
-node --test tests/divination.test.cjs
+npm test
 ```
 
-微信开发者工具自动化用例位于：
+执行生产构建并在微信开发者工具中跑完三种起卦流程：
 
-- `tests/e2e-react.cjs`
-- `tests/e2e-automator.cjs`
+```bash
+npm run test:e2e
+```
 
-端到端测试需要先在微信开发者工具的安全设置中开启服务端口。
-
-## AI 接口与隐私
-
-AI 解卦采用用户自行配置的模型接口。接口地址、API Key 与模型名称仅缓存在微信本地，不内置于源码，也不会上传至本项目维护者的服务器。
-
-请勿将真实 API Key 写入源码、提交记录或公开 Issue。
+默认使用 Windows 标准安装位置的微信开发者工具；其他位置可通过 `WECHAT_CLI_PATH` 指定。
 
 ## 品牌
 
-「一念六爻」由 **一颗薏米 YIKEYIMI** 设计与开发。仓库中的品牌标识仅用于项目识别，其使用不代表商标权利的转让。
+「一念观理」由 **一颗薏米 YIKEYIMI** 设计与开发。仓库中的品牌标识仅用于项目识别，其使用不代表商标权利的转让。
 
 ## License
 

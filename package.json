@@ -1,7 +1,7 @@
 {
   "name": "yinian-liuyao-weapp",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.2",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -14,7 +14,9 @@
   "scripts": {
     "dev:weapp": "taro build --type weapp --watch",
     "build:weapp": "taro build --type weapp",
-    "test": "node --test tests/divination.test.cjs"
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/divination.test.cjs",
+    "test:e2e": "npm run build:weapp && node tests/e2e-automator.cjs"
   },
   "dependencies": {
     "@tarojs/components": "4.2.1",
@@ -33,9 +35,11 @@
     "@tarojs/helper": "4.2.1",
     "@tarojs/plugin-framework-react": "4.2.1",
     "@tarojs/plugin-platform-weapp": "4.2.1",
+    "@tarojs/taro-loader": "4.2.1",
     "@tarojs/webpack5-runner": "4.2.1",
     "@types/react": "^18.3.0",
     "babel-preset-taro": "4.2.1",
+    "miniprogram-automator": "^0.12.1",
     "sass": "^1.89.0",
     "typescript": "^5.9.0",
     "webpack": "5.91.0"

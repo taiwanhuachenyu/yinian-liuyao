@@ -18,7 +18,7 @@ export default function ProductBrand({ compact = false }: ProductBrandProps) {
         <Text className="product-brand__company-en">YIKEYIMI</Text>
       </View>
       <View className="product-brand__divider" />
-      <Text className="product-brand__title">一念六爻</Text>
+      <Text className="product-brand__title">一念观理</Text>
     </View>
   )
 }

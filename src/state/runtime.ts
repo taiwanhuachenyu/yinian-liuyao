@@ -1,8 +1,7 @@
 import Taro from '@tarojs/taro'
-import type { AiConfig, Divination } from '../types'
+import type { Divination } from '../types'
 
 const HISTORY_KEY = 'liuyao-history-v3'
-const AI_KEY = 'liuyao-ai-config'
 let activeResult: Divination | null = null
 
 const validResult = (item: unknown): item is Divination => {
@@ -29,11 +28,3 @@ export const saveResult = (result: Divination) => {
 export const removeHistory = (id: string) => {
   Taro.setStorageSync(HISTORY_KEY, loadHistory().filter(item => item.id !== id))
 }
-
-export const loadAiConfig = (): AiConfig => {
-  try {
-    return { baseUrl: '', apiKey: '', model: '', ...(Taro.getStorageSync(AI_KEY) || {}) }
-  } catch { return { baseUrl: '', apiKey: '', model: '' } }
-}
-
-export const saveAiConfig = (config: AiConfig) => Taro.setStorageSync(AI_KEY, config)

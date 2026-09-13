@@ -1,10 +1,10 @@
 {
   "miniprogramRoot": "dist/",
   "projectname": "yinian-liuyao",
-  "appid": "wxc1c037ec49d72faa",
+  "appid": "wx0bb71e2af814cfed",
   "compileType": "miniprogram",
   "setting": {
-    "urlCheck": false,
+    "urlCheck": true,
     "es6": true,
     "enhance": true,
     "postcss": true,

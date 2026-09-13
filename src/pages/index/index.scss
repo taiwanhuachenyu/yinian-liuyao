@@ -243,6 +243,10 @@
   margin: -14rpx auto 22rpx;
 }
 
+.home-shortcuts--single {
+  grid-template-columns: 1fr;
+}
+
 .home-shortcut {
   display: grid;
   grid-template-columns: 54rpx 1fr 18rpx;

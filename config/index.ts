@@ -2,7 +2,7 @@ import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 
 export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
   const base: UserConfigExport<'webpack5'> = {
-    projectName: '一念六爻',
+    projectName: '一念观理',
     date: '2026-09-12',
     designWidth: 750,
     deviceRatio: { 750: 1 },

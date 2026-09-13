@@ -1,18 +1,17 @@
-import { useMemo, useRef, useState } from 'react'
-import { Button, ScrollView, Text, View } from '@tarojs/components'
+import { useMemo, useState } from 'react'
+import { Button, Text, View } from '@tarojs/components'
 import Taro, { useDidShow } from '@tarojs/taro'
 import type { Divination } from '../../types'
 import { getHexagramInterpretation } from '../../utils/divination'
-import { getActiveResult, loadAiConfig, loadHistory } from '../../state/runtime'
+import { getActiveResult, loadHistory } from '../../state/runtime'
 import HexLine from '../../components/HexLine'
 import ProductBrand from '../../components/ProductBrand'
 import './index.scss'
 import './index.polish.scss'
 import '../../styles/alignment.scss'
 
-const ai = require('../../utils/ai-mini')
 const POSITIONS = ['初', '二', '三', '四', '五', '上']
-const METHOD_NAMES = { coins: '铜钱摇卦', manual: '手动选卦', time: '天机起卦' }
+const METHOD_NAMES = { coins: '铜钱排盘', manual: '手动排盘', time: '时间排盘' }
 const yaoName = (yin: boolean, moving: boolean) => moving ? (yin ? '老阴' : '老阳') : (yin ? '少阴' : '少阳')
 const tagClass = (tag: string) => tag === '世' ? 'world' : tag === '应' ? 'response' : tag === '身' ? 'body' : 'plain'
 
@@ -21,37 +20,19 @@ export default function ResultPage() {
   const menuButton = typeof Taro.getMenuButtonBoundingClientRect === 'function' ? Taro.getMenuButtonBoundingClientRect() : null
   const safeTopHeight = menuButton?.top || ((systemInfo.statusBarHeight || 24) + 8)
   const [result, setResult] = useState<Divination | null>(null)
-  const [aiText, setAiText] = useState('')
-  const [aiLoading, setAiLoading] = useState(false)
   const [activeTab, setActiveTab] = useState<'chart' | 'reading'>('chart')
-  const taskRef = useRef<{ abort?: () => void } | null>(null)
 
   useDidShow(() => {
     const id = Taro.getCurrentInstance().router?.params?.id
-    setResult(getActiveResult() || loadHistory().find(item => item.id === id) || null)
+    const active = getActiveResult()
+    const stored = id ? loadHistory().find(item => item.id === id) : null
+    setResult(stored || (active && (!id || active.id === id) ? active : null))
   })
 
   const changing = useMemo(() => result?.originalYao.map((item, index) => item.changing ? index : -1).filter(index => index >= 0) || [], [result])
   const interpretations = useMemo(() => result ? getHexagramInterpretation(result.original, result.changed, changing) : [], [result, changing])
 
-  const runAi = () => {
-    if (!result || aiLoading) return
-    const config = loadAiConfig()
-    if (!ai.isAiConfigured(config)) {
-      Taro.showModal({ title: '暂未配置 AI', content: '请先填写兼容接口、API 密钥与模型名称。', confirmText: '前往设置', success: res => res.confirm && Taro.navigateTo({ url: '/pages/settings/index' }) })
-      return
-    }
-    setAiText(''); setAiLoading(true)
-    taskRef.current = ai.aiDivination(result, result.question, config, {
-      onToken: (text: string) => setAiText(current => current + text),
-      onDone: () => setAiLoading(false),
-      onError: (message: string) => { setAiLoading(false); Taro.showModal({ title: '解读中断', content: message, showCancel: false }) },
-    })
-  }
-
-  const stopAi = () => { taskRef.current?.abort?.(); setAiLoading(false) }
-
-  if (!result) return <View className="page-shell result-empty"><View className="safe-top" style={{ height: `${safeTopHeight}px` }} /><Text className="result-empty__gua">☷</Text><Text>没有找到这次卦象</Text><Button className="ghost-button" onClick={() => Taro.reLaunch({ url: '/pages/index/index' })}>重新起卦</Button></View>
+  if (!result) return <View className="page-shell result-empty"><View className="safe-top" style={{ height: `${safeTopHeight}px` }} /><Text className="result-empty__gua">☷</Text><Text>没有找到这次排盘</Text><Button className="ghost-button" onClick={() => Taro.reLaunch({ url: '/pages/index/index' })}>重新排盘</Button></View>
 
   const { original, changed, originalYao, changedYao, najia, changedNajia } = result
   const metaTags = [result.gongName, result.world, result.originalRelation, result.changedRelation, result.chongHe, ...(result.yinTags || []), ...(result.heju || [])].filter(Boolean)
@@ -64,10 +45,10 @@ export default function ResultPage() {
       <View className="result-nav">
         <View className="result-nav__button" hoverClass="result-nav__button--pressed" onClick={() => Taro.navigateBack({ fail: () => Taro.reLaunch({ url: '/pages/index/index' }) })}><Text className="back-mark">‹</Text><Text>返回</Text></View>
         <View className="result-nav__identity"><ProductBrand compact /></View>
-        <View className="result-nav__button result-nav__button--right" hoverClass="result-nav__button--pressed" onClick={() => Taro.navigateTo({ url: '/pages/settings/index' })}><Text>AI 设置</Text></View>
+        <View className="result-nav__placeholder" />
       </View>
       <Text className="result-eyebrow">{METHOD_NAMES[result.method]} · {result.date}</Text>
-      <Text className="result-question">{result.question || '未填写占问事项'}</Text>
+      <Text className="result-question">传统文化排盘记录</Text>
       <View className="hex-pair">
         <View className="hex-summary">
           <Text className="hex-role">本 卦</Text><Text className="hex-symbol">{original.symbol}</Text><Text className="hex-name">{original.name}</Text><Text className="hex-trigrams">{original.upperTrigram.name}上 · {original.lowerTrigram.name}下</Text>
@@ -137,18 +118,13 @@ export default function ResultPage() {
       </>}
 
       {activeTab === 'reading' && <View className="paper-card reading-card fade-up">
-        <Text className="section-kicker">断 语</Text><Text className="section-title">卦象解析</Text>
-        <View className="reading-lead"><Text>{original.symbol}</Text><Text>观其象，玩其辞；观其变，玩其占。</Text></View>
+        <Text className="section-kicker">学 习</Text><Text className="section-title">结构说明</Text>
+        <View className="reading-lead"><Text>{original.symbol}</Text><Text>观其象，读其辞；识其变，明其理。</Text></View>
         {interpretations.map((text, index) => <View className="interpretation" key={index}><Text className="interpretation-index">{String(index + 1).padStart(2, '0')}</Text><Text>{text}</Text></View>)}
-        <Text className="reading-disclaimer">卦象提供观察问题的另一种视角，不替代医疗、法律、投资等专业意见。</Text>
+        <Text className="reading-disclaimer">本页内容用于传统文化知识展示，不构成任何现实事项的预测或专业建议。</Text>
       </View>}
 
-      <View className="ai-card fade-up">
-        <View className="ai-card__head"><View><Text className="ai-kicker">AI 辅助解读</Text><Text className="ai-title">把复杂卦象整理成清晰线索</Text></View><View className={`ai-orb ${aiLoading ? 'ai-orb--loading' : ''}`}><Text>AI</Text></View></View>
-        {!aiText ? <View className="ai-empty"><Text>AI 将结合用神、旺衰、动变与卦辞，整理出便于理解的综合解读。</Text><Button className="ai-button" onClick={runAi}>{aiLoading ? '正在梳理卦象…' : '开始 AI 解读'}</Button></View> : <View className="ai-answer"><ScrollView scrollY className="ai-scroll"><Text userSelect>{aiText}</Text>{aiLoading && <View className="ai-cursor" />}</ScrollView><Button className="ai-stop" onClick={aiLoading ? stopAi : runAi}>{aiLoading ? '停止解读' : '重新解读'}</Button></View>}
-      </View>
-
-      <Button className="seal-button new-cast" onClick={() => Taro.reLaunch({ url: '/pages/index/index' })}>再起一卦</Button>
+      <Button className="seal-button new-cast" onClick={() => Taro.reLaunch({ url: '/pages/index/index' })}>重新排盘</Button>
     </View><View className="safe-bottom" />
   </View>
 }

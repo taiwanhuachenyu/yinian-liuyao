@@ -39,6 +39,10 @@
   gap: 16rpx;
 }
 
+.home-shortcuts--single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .home-shortcut {
   display: grid;
   grid-template-columns: 56rpx minmax(0, 1fr) 22rpx;

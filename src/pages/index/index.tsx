@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Button, Image, Input, Picker, ScrollView, Text, View } from '@tarojs/components'
+import { Button, Image, Picker, ScrollView, Text, View } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import type { Divination, Yao } from '../../types'
 import { createDivination, readCoins, timeDivination, tossCoins } from '../../utils/divination'
@@ -13,9 +13,9 @@ import '../../styles/alignment.scss'
 
 type Method = 'coins' | 'manual' | 'time'
 const METHODS: { key: Method; glyph: string; title: string; note: string }[] = [
-  { key: 'coins', glyph: '钱', title: '铜钱摇卦', note: '依次六掷' },
-  { key: 'manual', glyph: '爻', title: '手动选卦', note: '逐爻选定' },
-  { key: 'time', glyph: '时', title: '天机起卦', note: '年月日时' },
+  { key: 'coins', glyph: '钱', title: '铜钱排盘', note: '依次六掷' },
+  { key: 'manual', glyph: '爻', title: '手动排盘', note: '逐爻选定' },
+  { key: 'time', glyph: '时', title: '时间排盘', note: '年月日时' },
 ]
 const SHICHEN = [
   ['子时', '23–01', 0], ['丑时', '01–03', 2], ['寅时', '03–05', 4], ['卯时', '05–07', 6],
@@ -24,7 +24,6 @@ const SHICHEN = [
 ] as const
 const CN = ['零', '一', '二', '三', '四', '五', '六']
 const POSITIONS = ['初', '二', '三', '四', '五', '上']
-const QUICK_QUESTIONS = ['事业选择', '关系发展', '近期决策', '当下重点']
 const MANUAL = [
   { name: '少阳', hint: '静', mark: '—', yin: false, changing: false },
   { name: '少阴', hint: '静', mark: '--', yin: true, changing: false },
@@ -39,8 +38,7 @@ export default function Home() {
   const systemInfo = Taro.getSystemInfoSync()
   const menuButton = typeof Taro.getMenuButtonBoundingClientRect === 'function' ? Taro.getMenuButtonBoundingClientRect() : null
   const safeTopHeight = menuButton?.top || ((systemInfo.statusBarHeight || 24) + 8)
-  const [method, setMethod] = useState<Method>('coins')
-  const [question, setQuestion] = useState('')
+  const [method, setMethod] = useState<Method | null>(null)
   const [date, setDate] = useState(ymd(now))
   const [hour, setHour] = useState(now.getHours())
   const [yaos, setYaos] = useState<(Yao | null)[]>(Array(6).fill(null))
@@ -59,8 +57,8 @@ export default function Home() {
     : complete
       ? '六爻已定'
       : count === 0
-        ? '准备起卦'
-        : `已起${CN[count]}爻，还需${CN[6 - count]}爻`
+        ? '准备排盘'
+        : `已排${CN[count]}爻，还需${CN[6 - count]}爻`
   const progressBadge = method === 'time'
     ? '时间已确认'
     : complete
@@ -69,11 +67,11 @@ export default function Home() {
         ? '未开始'
         : `${CN[count]} / 六`
   const resultButtonText = method === 'time'
-    ? '天机起卦'
+    ? '生成时间排盘'
     : complete
-      ? '查看卦象'
+      ? '查看排盘'
       : count === 0
-        ? '请先完成六次起卦'
+        ? '请先完成六次排盘'
         : `还需完成${CN[6 - count]}爻`
 
   const clearTimers = () => { timers.current.forEach(clearTimeout); timers.current = [] }
@@ -124,14 +122,15 @@ export default function Home() {
   }
 
   const generate = () => {
+    if (!method) return
     if (method === 'time') {
       const lines = timeDivination(date, hour)
-      if (lines) enterResult(createDivination(lines, question.trim(), date, method, hour))
+      if (lines) enterResult(createDivination(lines, '', date, method, hour))
       return
     }
     const lines = yaos.filter((item): item is Yao => !!item)
     if (lines.length !== 6) return
-    enterResult(createDivination(lines, question.trim(), date, method, hour))
+    enterResult(createDivination(lines, '', date, method, hour))
   }
 
   const openHistory = () => { setHistory(loadHistory()); setHistoryOpen(true) }
@@ -158,32 +157,19 @@ export default function Home() {
         <View className="hero-spark hero-spark--two" />
         <View className="spirit-aura" />
         <Image className="hero-spirit" src={require('../../assets/gua-spirit.png')} mode="aspectFit" />
-        <Text className="hero-title">你想问什么？</Text>
-        <Text className="hero-copy">输入要占问的问题，也可以直接开始起卦。卦象结果将作为分析和决策的参考。</Text>
+        <Text className="hero-title">观象明理</Text>
+        <Text className="hero-copy">选择一种传统排盘方式，了解卦象结构与卦爻辞。内容仅供传统文化学习参考。</Text>
         <View className="hero-symbol"><Text>☰</Text><View className="hero-symbol__dot" /><Text>☷</Text></View>
       </View>
 
-      <View className="home-shortcuts fade-up">
-        <View className="home-shortcut" hoverClass="home-shortcut--pressed" onClick={openHistory}><Text className="home-shortcut__icon">册</Text><View><Text>卦象记录</Text><Text>回看每一次问卦</Text></View><Text className="home-shortcut__arrow">›</Text></View>
-        <View className="home-shortcut" hoverClass="home-shortcut--pressed" onClick={() => Taro.navigateTo({ url: '/pages/settings/index' })}><Text className="home-shortcut__icon home-shortcut__icon--ai">AI</Text><View><Text>AI 解读</Text><Text>接入你的模型</Text></View><Text className="home-shortcut__arrow">›</Text></View>
+      <View className="home-shortcuts home-shortcuts--single fade-up">
+        <View className="home-shortcut" hoverClass="home-shortcut--pressed" onClick={openHistory}><Text className="home-shortcut__icon">册</Text><View><Text>排盘记录</Text><Text>回看本机保存的记录</Text></View><Text className="home-shortcut__arrow">›</Text></View>
       </View>
 
       <View className="paper-card inquiry-card fade-up">
         <View className="card-index">壹</View>
-          <Text className="section-kicker">占问事项</Text>
-          <Text className="section-title">写下你的问题</Text>
-        <View className="question-field">
-          <Input className="question-input" maxlength={300} value={question} placeholder="可不填写，直接开始起卦" placeholderClass="question-placeholder" onInput={event => setQuestion(event.detail.value)} />
-          <Text className="question-count">{question.length}/300</Text>
-        </View>
-        <View className="quick-area">
-          <Text className="quick-label">常见问题</Text>
-          <ScrollView scrollX className="quick-scroll" enhanced showScrollbar={false}>
-            <View className="quick-list">
-              {QUICK_QUESTIONS.map((item, index) => <View className={`quick-chip quick-chip--${index}`} hoverClass="quick-chip--pressed" key={item} onClick={() => { feedback(); setQuestion(item) }}><Text>{item}</Text></View>)}
-            </View>
-          </ScrollView>
-        </View>
+        <Text className="section-kicker">排盘时间</Text>
+        <Text className="section-title">选择日期与时辰</Text>
         <View className="occasion-row">
           <Picker mode="date" value={date} onChange={event => setDate(String(event.detail.value))}>
             <View className="occasion-item"><Text className="occasion-label">选择日期</Text><Text className="occasion-value">{date.replace(/-/g, '.')}</Text></View>
@@ -197,8 +183,8 @@ export default function Home() {
 
       <View className="paper-card method-card fade-up">
         <View className="card-index">贰</View>
-        <Text className="section-kicker">起卦方式</Text>
-        <Text className="section-title">选择起卦方式</Text>
+        <Text className="section-kicker">排盘方式</Text>
+        <Text className="section-title">选择排盘方式</Text>
         <View className="method-tabs">
           {METHODS.map(item => <View key={item.key} hoverClass="method-tab--pressed" className={`method-tab method-tab--${item.key} ${method === item.key ? 'method-tab--active' : ''}`} onClick={() => switchMethod(item.key)}>
             <Text className="method-glyph">{item.glyph}</Text><Text className="method-name">{item.title}</Text><Text className="method-note">{item.note}</Text>
@@ -218,7 +204,7 @@ export default function Home() {
           <Text className="cast-caption">{lastCaption}</Text>
           {complete
             ? <View className="cast-complete"><Text>六次投掷已完成</Text><Text>可以在下方查看卦象结果</Text></View>
-            : <Button className="cast-button" disabled={flipping || settling} onClick={cast}>{flipping ? '铜钱旋起' : settling ? '正在落定' : `起${POSITIONS[count]}爻`}</Button>}
+            : <Button className="cast-button" disabled={flipping || settling} onClick={cast}>{flipping ? '铜钱旋起' : settling ? '正在落定' : `排${POSITIONS[count]}爻`}</Button>}
         </View>}
 
         {method === 'manual' && <View className="manual-panel">
@@ -236,15 +222,15 @@ export default function Home() {
 
         {method === 'time' && <View className="time-panel">
           <View className="time-emblem"><Text className="time-emblem__outer">天</Text><Text className="time-emblem__inner">機</Text></View>
-          <Text className="time-title">梅花易数 · 天机起卦</Text>
-          <Text className="time-copy">系统根据所选日期和时辰计算上卦、下卦与动爻。确认信息后即可起卦。</Text>
+          <Text className="time-title">时间规则 · 排盘演示</Text>
+          <Text className="time-copy">系统根据所选日期和时辰演示上卦、下卦与动爻的传统计算规则。</Text>
           <View className="time-stamp"><Text>{date}</Text><Text>{SHICHEN[selectedHourIndex][0]}</Text></View>
         </View>}
       </View>
 
-      <View className="paper-card preview-card fade-up">
+      {method && <View className="paper-card preview-card fade-up">
         <View className="card-index">叁</View>
-        <View className="preview-head"><View><Text className="section-kicker">起卦进度</Text><Text className="section-title">{progressTitle}</Text></View><Text className="preview-count">{progressBadge}</Text></View>
+        <View className="preview-head"><View><Text className="section-kicker">排盘进度</Text><Text className="section-title">{progressTitle}</Text></View><Text className="preview-count">{progressBadge}</Text></View>
         <View className="progress-track"><View className="progress-value" style={{ width: `${method === 'time' ? 100 : Math.round(count / 6 * 100)}%` }} /></View>
         <View className="yao-preview">
           {preview.map((yao, reverseIndex) => <View className={`preview-line ${yao ? 'preview-line--ready' : ''}`} key={reverseIndex} style={{ animationDelay: `${reverseIndex * 60}ms` }}>
@@ -254,8 +240,8 @@ export default function Home() {
           </View>)}
         </View>
         <Button className="seal-button result-btn" disabled={method !== 'time' && !complete} onClick={generate}>{resultButtonText}</Button>
-        {(method !== 'time' && count > 0) && <Button className="reset-link" onClick={resetLines}>重新起卦</Button>}
-      </View>
+        {(method !== 'time' && count > 0) && <Button className="reset-link" onClick={resetLines}>重新排盘</Button>}
+      </View>}
 
       <View className="safe-bottom" />
 
@@ -263,10 +249,10 @@ export default function Home() {
         <View className="drawer-mask" onClick={() => setHistoryOpen(false)} />
         <View className="history-drawer">
           <View className="drawer-handle" />
-          <View className="drawer-title"><View><Text className="section-kicker">历史记录</Text><Text className="section-title">起卦记录</Text></View><Text className="drawer-close" onClick={() => setHistoryOpen(false)}>收起</Text></View>
+          <View className="drawer-title"><View><Text className="section-kicker">历史记录</Text><Text className="section-title">排盘记录</Text></View><Text className="drawer-close" onClick={() => setHistoryOpen(false)}>收起</Text></View>
           <ScrollView scrollY className="history-list">
-            {history.length === 0 ? <View className="history-empty"><Text className="history-empty__symbol">☷</Text><Text>还没有卦象记录</Text><Text>完成起卦后，记录会自动保存在这里</Text></View> : history.map(item => <View className="history-item" key={item.id}>
-              <View className="history-main" onClick={() => loadRecord(item)}><Text className="history-symbol">{item.original.symbol}</Text><View><Text className="history-name">{item.original.name}{item.changed ? ` 之 ${item.changed.name}` : ''}</Text><Text className="history-question">{item.question || '未填写占问事项'}</Text><Text className="history-date">{item.date}</Text></View></View>
+            {history.length === 0 ? <View className="history-empty"><Text className="history-empty__symbol">☷</Text><Text>还没有排盘记录</Text><Text>完成排盘后，记录会自动保存在这里</Text></View> : history.map(item => <View className="history-item" key={item.id}>
+              <View className="history-main" onClick={() => loadRecord(item)}><Text className="history-symbol">{item.original.symbol}</Text><View><Text className="history-name">{item.original.name}{item.changed ? ` 之 ${item.changed.name}` : ''}</Text><Text className="history-question">传统文化排盘记录</Text><Text className="history-date">{item.date}</Text></View></View>
               <Text className="history-delete" onClick={() => deleteRecord(item.id)}>删除</Text>
             </View>)}
           </ScrollView>

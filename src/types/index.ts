@@ -83,10 +83,3 @@ export interface Divination {
   xunKong: string
   created: number
 }
-
-// AI 解卦接口配置。纯静态部署藏不住密钥，故由用户自带，仅存于其本机浏览器
-export interface AiConfig {
-  baseUrl: string
-  apiKey: string
-  model: string
-}

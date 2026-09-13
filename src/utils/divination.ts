@@ -432,24 +432,24 @@ export function getHexagramInterpretation(hexagram: Hexagram, changed: Hexagram 
   const interpretations: string[] = []
 
   const baseMeaning = hexagram.interpretation ?? hexagram.judgment
-  interpretations.push(`【本卦释义】${hexagram.name}：${baseMeaning}`)
+  interpretations.push(`【本卦资料】${hexagram.name}：${baseMeaning}`)
 
   if (changed) {
     const changedMeaning = changed.interpretation ?? changed.judgment
-    interpretations.push(`【变卦趋势】事态终将转向${changed.name}：${changedMeaning}`)
+    interpretations.push(`【变卦资料】动爻变化后形成${changed.name}：${changedMeaning}`)
   }
 
   if (changingYaos.length === 1) {
     const yaoIdx = changingYaos[0]
     const label = YAO_POSITION_LABELS[yaoIdx] ?? String(yaoIdx + 1)
-    interpretations.push(`【动爻独发】${label}爻独发，主断在此，当以其爻辞为凭：${hexagram.lines[yaoIdx].text}`)
+    interpretations.push(`【动爻位置】${label}爻标记为动爻，可对照学习其爻辞：${hexagram.lines[yaoIdx].text}`)
   } else if (changingYaos.length > 1) {
-    interpretations.push(`【多爻发动】共有${['零','一','二','三','四','五','六'][changingYaos.length] ?? changingYaos.length}爻发动，事情复杂多变，宜以本卦卦义为主、变卦为辅，参酌动爻综合判断。`)
+    interpretations.push(`【动爻结构】共有${['零','一','二','三','四','五','六'][changingYaos.length] ?? changingYaos.length}爻标记为动爻，可依次对照本卦、动爻和变卦资料，学习卦形变化关系。`)
   } else {
-    interpretations.push(`【六爻安静】卦无动爻，事态相对稳定，宜以本卦卦义与卦辞为主要参考，静守其常。`)
+    interpretations.push('【静卦结构】六爻均未标记为动爻，可从本卦卦辞、上下卦结构与六亲纳甲资料入手学习。')
   }
 
-  interpretations.push('【总断】心诚则灵，卦不妄成。以上仅供参考，谋事在人，成事在天，积德行善，自然逢凶化吉。')
+  interpretations.push('【学习提示】以上内容用于展示传统排盘结构与经典文本，帮助理解各项术语之间的对应关系。')
 
   return interpretations
 }
